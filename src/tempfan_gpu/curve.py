@@ -101,28 +101,54 @@ def make_default_curve() -> List[Tuple[float, int]]:
     return [(0.0, 0), (100.0, 255)]
 
 
-def interpolate_pwm(
-    temperature: float, curve: List[Tuple[float, int]]
-) -> int:
-    """Interpolate a PWM value for the given temperature using numpy.interp.
+def interpolate_temperature(
+    temperature: "float | np.ndarray",
+    curve: List[Tuple[float, int]],
+) -> "float | np.ndarray":
+    """Pure math function: linear interpolate temperature to PWM value.
 
-    - Below the lowest curve temperature, clamps to the lowest PWM value.
-    - Above the highest curve temperature, clamps to the highest PWM value.
-    - Within the curve range, performs linear interpolation and rounds.
+    This is the **single source of truth** for the temperature-to-PWM
+    mapping. Both the runtime controller and the plot subcommand call this
+    function, guaranteeing algorithmic consistency.
+
+    Accepts a scalar float or a numpy array.  Below the lowest curve
+    temperature clamps to the first point's PWM; above the highest clamps
+    to the last point's PWM.  **No rounding is applied** — rounding is the
+    caller's responsibility based on the use case (hardware writes vs plot).
 
     Args:
-        temperature: The GPU temperature in °C.
-        curve: A list of (temperature, pwm) points sorted by temperature.
+        temperature: GPU temperature in °C, or a numpy array thereof.
+        curve: List of ``(temperature, pwm)`` points sorted by temperature.
 
     Returns:
-        An integer PWM value in [0, 255].
+        Float PWM value for scalar input, or ``numpy.ndarray`` of float64
+        for array input.
     """
     if not curve:
-        return 0
+        scalar = np.ndim(temperature) == 0
+        return 0.0 if scalar else np.zeros_like(temperature, dtype=float)
 
     temps = np.array([p[0] for p in curve], dtype=float)
     pwms = np.array([p[1] for p in curve], dtype=float)
 
-    # numpy.interp handles clamping and linear interpolation natively
-    result = float(np.interp(temperature, temps, pwms))
-    return round(result)
+    result = np.interp(temperature, temps, pwms)
+    return float(result) if np.ndim(temperature) == 0 else result
+
+
+def interpolate_pwm(
+    temperature: float, curve: List[Tuple[float, int]]
+) -> int:
+    """Interpolate and round to an integer PWM value for hardware writes.
+
+    Delegates to :func:`interpolate_temperature` and rounds the result.
+    The rounding step is the **only** difference from the pure math
+    function.
+
+    Args:
+        temperature: The GPU temperature in °C.
+        curve: A list of ``(temperature, pwm)`` points sorted by temperature.
+
+    Returns:
+        An integer PWM value in ``[0, 255]``.
+    """
+    return round(interpolate_temperature(temperature, curve))  # type: ignore[arg-type]

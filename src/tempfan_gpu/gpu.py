@@ -1,5 +1,6 @@
 """GPU temperature querying via nvidia-smi."""
 
+import math
 import subprocess
 from typing import List, Optional
 
@@ -37,7 +38,9 @@ def get_gpu_temperatures() -> List[float]:
         if not line:
             continue
         try:
-            temperatures.append(float(line))
+            val = float(line)
+            if math.isfinite(val):
+                temperatures.append(val)
         except ValueError:
             # Skip unparseable lines
             continue
