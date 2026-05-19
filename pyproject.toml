@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tempfan-gpu"
+version = "1.0.0"
+description = "A GPU temperature-based fan speed controller for NVIDIA GPUs on Linux"
+requires-python = ">=3.8"
+authors = [
+    { name = "Heliopause0916" },
+]
+
+[project.scripts]
+tempfan-gpu = "tempfan_gpu.cli:entry_point"
+
+[tool.setuptools.packages.find]
+where = ["src"]
