@@ -10,9 +10,19 @@ requires-python = ">=3.8"
 authors = [
     { name = "Heliopause0916" },
 ]
+dependencies = [
+    "numpy",
+    "loguru",
+]
 
 [project.scripts]
 tempfan-gpu = "tempfan_gpu.cli:entry_point"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+tempfan_gpu = ["presets/*.csv"]
+
+[project.optional-dependencies]
+plot = ["matplotlib"]
