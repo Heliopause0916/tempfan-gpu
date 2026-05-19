@@ -101,7 +101,6 @@ For multi-fan setups, create separate service files with different `--pwm-device
 ## Fan Curve CSV Format
 
 ```csv
-temperature_C,PWM
 30,50
 50,100
 70,180
@@ -110,6 +109,7 @@ temperature_C,PWM
 
 Rules:
 - **Encoding**: utf-8-sig (BOM-compatible)
+- **No header row**: the CSV file must start with data directly — do not include a `temperature_C,PWM` header line
 - **Columns**: temperature (C), PWM (0-255)
 - **Minimum**: at least 2 data points
 - **Order**: both temperature and PWM must be non-decreasing (equal values allowed)

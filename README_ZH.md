@@ -101,7 +101,6 @@ sudo journalctl -u tempfan-gpu -f
 ## 风扇曲线 CSV 格式
 
 ```csv
-temperature_C,PWM
 30,50
 50,100
 70,180
@@ -110,6 +109,7 @@ temperature_C,PWM
 
 规则：
 - **编码**：utf-8-sig（兼容 BOM）
+- **无标头行**：CSV 文件必须直接从数据开始，**不要**包含 `temperature_C,PWM` 标头行
 - **列**：温度（°C）、PWM（0-255）
 - **最少**：至少 2 个数据点
 - **顺序**：温度和 PWM 都必须非递减（允许相等）

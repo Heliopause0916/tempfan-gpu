@@ -85,6 +85,7 @@ tempfan-gpu --plot my-curve.csv --output curve.png
 
 ### CSV 曲线规格
 - 编码: utf-8-sig (兼容 BOM), 两列: 温度(C), PWM(0-255)
+- **无标头行**: CSV 文件必须直接从数据开始, 不能包含标头行
 - 温度和 PWM 都必须非递减 (允许相等)
 - PWM 值必须在 [0, 255] 范围内
 - 至少 2 个数据点
