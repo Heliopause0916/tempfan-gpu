@@ -70,6 +70,12 @@ def parse_csv_curve(csv_path: str) -> List[Tuple[float, int]]:
             dedup.append(p)
     points = dedup
 
+    # Re-validate minimum data points after deduplication
+    if len(points) < 2:
+        raise ValueError(
+            f"At least 2 unique data points are required after deduplication, got {len(points)}"
+        )
+
     # Validate non-decreasing PWM using numpy
     pwms_arr = np.array([p[1] for p in points], dtype=int)
     if np.any(np.diff(pwms_arr) < 0):

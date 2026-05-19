@@ -102,13 +102,13 @@ def _write_pwm_enable(pwm_device_path: str, value: str) -> None:
         with open(enable_path, "w", encoding="utf-8") as f:
             f.write(f"{value}\n")
     except PermissionError:
-        logger.error(f"Permission denied when writing to {enable_path}. Try running as root (e.g. sudo).")
+        logger.error("Permission denied when writing to {}. Try running as root (e.g. sudo).", enable_path)
         sys.exit(1)
     except FileNotFoundError:
-        logger.error(f"PWM enable file not found: {enable_path}. Check the device path.")
+        logger.error("PWM enable file not found: {}. Check the device path.", enable_path)
         sys.exit(1)
     except OSError as exc:
-        logger.error(f"OS error when writing to {enable_path}: {exc}")
+        logger.error("OS error when writing to {}: {}", enable_path, exc)
         sys.exit(1)
 
 
@@ -155,11 +155,11 @@ def set_pwm_value(pwm_device_path: str, value: int) -> None:
         with open(pwm_device_path, "w", encoding="utf-8") as f:
             f.write(f"{clamped}\n")
     except PermissionError:
-        logger.error(f"Permission denied when writing to {pwm_device_path}. Try running as root (e.g. sudo).")
+        logger.error("Permission denied when writing to {}. Try running as root (e.g. sudo).", pwm_device_path)
         sys.exit(1)
     except FileNotFoundError:
-        logger.error(f"PWM device file not found: {pwm_device_path}. Check the device path.")
+        logger.error("PWM device file not found: {}. Check the device path.", pwm_device_path)
         sys.exit(1)
     except OSError as exc:
-        logger.error(f"OS error when writing to {pwm_device_path}: {exc}")
+        logger.error("OS error when writing to {}: {}", pwm_device_path, exc)
         sys.exit(1)
